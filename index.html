@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>3-Way Image Swipe</title>
+<style>
+body {
+  margin: 0;
+  background: #111;
+}
+
+.three-swipe-container {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  text-align: center;
+  color: white;
+  font-family: sans-serif;
+}
+
+.three-swipe-wrapper {
+  display: flex;
+  width: 300%;
+  transition: transform 0.5s ease-in-out;
+}
+
+.swipe-img {
+  width: 100%;
+  object-fit: cover;
+}
+
+.three-swipe-buttons {
+  margin: 10px 0;
+}
+
+.three-swipe-buttons button {
+  background: #333;
+  border: 1px solid #777;
+  color: white;
+  padding: 6px 14px;
+  margin: 0 6px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.three-swipe-buttons button:hover {
+  background: #555;
+}
+
+#slider {
+  width: 80%;
+  margin-top: 10px;
+}
+</style>
+</head>
+<body>
+
+<div class="three-swipe-container">
+  <div class="three-swipe-wrapper" id="swipeWrapper">
+    <img src="A.jpg" class="swipe-img">
+    <img src="B.jpg" class="swipe-img">
+    <img src="C.jpg" class="swipe-img">
+  </div>
+
+  <div class="three-swipe-buttons">
+    <button onclick="goTo(0)">A</button>
+    <button onclick="goTo(1)">B</button>
+    <button onclick="goTo(2)">C</button>
+  </div>
+
+  <input type="range" min="0" max="2" value="1" step="1" id="slider">
+</div>
+
+<script>
+const slider = document.getElementById("slider");
+const wrapper = document.getElementById("swipeWrapper");
+
+function goTo(n) {
+  wrapper.style.transform = `translateX(${-n * 100}%)`;
+  slider.value = n;
+}
+
+slider.addEventListener("input", () => {
+  goTo(slider.value);
+});
+</script>
+
+</body>
+</html>
