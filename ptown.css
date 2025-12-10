@@ -1,0 +1,39 @@
+#compare-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 900px;     /* adjust as needed */
+  margin: auto;
+  overflow: hidden;
+  aspect-ratio: 4 / 3;  /* keeps all images same shape */
+}
+
+/* All images aligned and identical size */
+#compare-wrapper img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+/* Starting positions: evenly spaced thirds */
+.layer-0 { clip-path: inset(0 66% 0 0); }  /* left third visible */
+.layer-1 { clip-path: inset(0 33% 0 33%); } /* middle third */
+.layer-2 { clip-path: inset(0 0 0 66%); }   /* right third */
+
+/* Handles */
+.handle {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 6px;
+  background: white;
+  border: 2px solid #000;
+  cursor: ew-resize;
+  z-index: 10;
+}
+
+#handle-left  { left: 33%; }
+#handle-right { left: 66%; }
