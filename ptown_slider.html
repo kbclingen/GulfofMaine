@@ -1,88 +1,443 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Three Image Slider</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Swipe Comparison</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Playfair+Display:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-<style>
-  body {
-    margin: 0;
-    background: #000;
-  }
+        :root {
+            --primary: #2c3e50;
+            --accent: #3498db;
+            --light: #ecf0f1;
+            --handle-size: 50px;
+        }
 
-  .slider-container {
-    position: relative;
-    width: 100%;
-    max-width: 1600px;   /* adjusts for your wide images */
-    margin: auto;
-    overflow: hidden;
-  }
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: #1a1a1a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 2rem;
+        }
 
-  .slider {
-    display: flex;
-    transition: transform 0.4s ease;
-  }
+        .container {
+            max-width: 1400px;
+            width: 100%;
+        }
 
-  .slider img {
-    width: 100%;
-    flex-shrink: 0;
-    object-fit: cover;
-  }
+        .comparison-wrapper {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            overflow: hidden;
+            border-radius: 4px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            user-select: none;
+            -webkit-user-select: none;
+        }
 
-  .nav-btn {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background: rgba(0,0,0,0.45);
-    border: none;
-    color: white;
-    font-size: 2.5rem;
-    padding: 0.2em 0.5em;
-    cursor: pointer;
-    z-index: 10;
-  }
+        /* Base layer - Bottom image (Image 1) */
+        .image-layer-bottom {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: white;
+            font-family: 'Playfair Display', serif;
+        }
 
-  .prev { left: 20px; }
-  .next { right: 20px; }
-</style>
+        .image-layer-bottom img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* Middle layer - Image 2 */
+        .image-layer-middle {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: white;
+            font-family: 'Playfair Display', serif;
+            clip-path: inset(0 50% 0 0);
+            transition: clip-path 0.05s linear;
+        }
+
+        .image-layer-middle img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* Top layer - Image 3 */
+        .image-layer-top {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: white;
+            font-family: 'Playfair Display', serif;
+            clip-path: inset(0 75% 0 0);
+            transition: clip-path 0.05s linear;
+        }
+
+        .image-layer-top img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* Divider lines */
+        .divider {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            z-index: 10;
+            cursor: ew-resize;
+            transition: left 0.05s linear;
+        }
+
+        .divider-middle {
+            left: 50%;
+        }
+
+        .divider-top {
+            left: 25%;
+        }
+
+        /* Handle on divider */
+        .handle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: var(--handle-size);
+            height: var(--handle-size);
+            background: white;
+            border-radius: 50%;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: ew-resize;
+            transition: transform 0.2s ease;
+        }
+
+        .handle:hover {
+            transform: translate(-50%, -50%) scale(1.1);
+        }
+
+        .handle::before,
+        .handle::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-style: solid;
+        }
+
+        .handle::before {
+            left: 12px;
+            border-width: 8px 10px 8px 0;
+            border-color: transparent #2c3e50 transparent transparent;
+        }
+
+        .handle::after {
+            right: 12px;
+            border-width: 8px 0 8px 10px;
+            border-color: transparent transparent transparent #2c3e50;
+        }
+
+        /* Labels */
+        .image-label {
+            position: absolute;
+            top: 1.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            color: white;
+            font-size: 0.9rem;
+            font-weight: 500;
+            border-radius: 4px;
+            z-index: 5;
+            pointer-events: none;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .label-bottom {
+            right: 1.5rem;
+        }
+
+        .label-middle {
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .label-top {
+            left: 1.5rem;
+        }
+
+        /* Instructions */
+        .instructions {
+            position: absolute;
+            bottom: 1.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
+            font-size: 0.85rem;
+            z-index: 5;
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            animation: fadeIn 1s ease 0.5s both;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+
+        .instructions svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            :root {
+                --handle-size: 40px;
+            }
+
+            .image-label {
+                font-size: 0.75rem;
+                padding: 0.4rem 0.8rem;
+            }
+
+            .instructions {
+                font-size: 0.75rem;
+                padding: 0.6rem 1.2rem;
+            }
+
+            body {
+                padding: 1rem;
+            }
+        }
+
+        /* Active state when dragging */
+        .comparison-wrapper.dragging {
+            cursor: ew-resize;
+        }
+
+        .comparison-wrapper.dragging .handle {
+            transform: translate(-50%, -50%) scale(1.15);
+        }
+    </style>
 </head>
-
 <body>
+    <div class="container">
+        <div class="comparison-wrapper" id="comparisonWrapper">
+            <!-- Bottom layer (always visible) -->
+            <div class="image-layer-bottom">
+                <!-- Replace with: <img src="ptown_2.jpg" alt="Image 1"> -->
+                <div>Image 1</div>
+            </div>
 
-<div class="slider-container">
-  <div class="slider">
-    <img src="PTown_0.jpg" alt="">
-    <img src="PTown_1.jpg" alt="">
-    <img src="PTown_2.jpg" alt="">
-  </div>
+            <!-- Middle layer (covers right side initially) -->
+            <div class="image-layer-middle" id="middleLayer">
+                <!-- Replace with: <img src="ptown_1.jpg" alt="Image 2"> -->
+                <div>Image 2</div>
+            </div>
 
-  <button class="nav-btn prev">‹</button>
-  <button class="nav-btn next">›</button>
-</div>
+            <!-- Top layer (covers most, reveals from left) -->
+            <div class="image-layer-top" id="topLayer">
+                <!-- Replace with: <img src="ptown_0.jpg" alt="Image 3"> -->
+                <div>Image 3</div>
+            </div>
 
-<script>
-  const slider = document.querySelector('.slider');
-  const images = document.querySelectorAll('.slider img');
-  const next = document.querySelector('.next');
-  const prev = document.querySelector('.prev');
+            <!-- Dividers with handles -->
+            <div class="divider divider-top" id="dividerTop">
+                <div class="handle" id="handleTop"></div>
+            </div>
 
-  let index = 0;
+            <div class="divider divider-middle" id="dividerMiddle">
+                <div class="handle" id="handleMiddle"></div>
+            </div>
 
-  function updateSlider() {
-    slider.style.transform = `translateX(-${index * 100}%)`;
-  }
+            <!-- Labels -->
+            <div class="image-label label-top">Image 3</div>
+            <div class="image-label label-middle">Image 2</div>
+            <div class="image-label label-bottom">Image 1</div>
 
-  next.addEventListener('click', () => {
-    index = (index + 1) % images.length;
-    updateSlider();
-  });
+            <!-- Instructions -->
+            <div class="instructions">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M9 18l6-6-6-6"/>
+                    <path d="M15 18l-6-6 6-6"/>
+                </svg>
+                Drag the handles to compare images
+            </div>
+        </div>
+    </div>
 
-  prev.addEventListener('click', () => {
-    index = (index - 1 + images.length) % images.length;
-    updateSlider();
-  });
-</script>
+    <script>
+        class SwipeComparison {
+            constructor() {
+                this.wrapper = document.getElementById('comparisonWrapper');
+                this.topLayer = document.getElementById('topLayer');
+                this.middleLayer = document.getElementById('middleLayer');
+                this.dividerTop = document.getElementById('dividerTop');
+                this.dividerMiddle = document.getElementById('dividerMiddle');
+                this.handleTop = document.getElementById('handleTop');
+                this.handleMiddle = document.getElementById('handleMiddle');
+                
+                this.isDraggingTop = false;
+                this.isDraggingMiddle = false;
+                
+                this.init();
+            }
 
+            init() {
+                // Mouse events for top handle
+                this.handleTop.addEventListener('mousedown', (e) => {
+                    this.isDraggingTop = true;
+                    this.wrapper.classList.add('dragging');
+                    e.preventDefault();
+                });
+
+                // Mouse events for middle handle
+                this.handleMiddle.addEventListener('mousedown', (e) => {
+                    this.isDraggingMiddle = true;
+                    this.wrapper.classList.add('dragging');
+                    e.preventDefault();
+                });
+
+                // Global mouse move
+                document.addEventListener('mousemove', (e) => {
+                    if (this.isDraggingTop) {
+                        this.updateTopPosition(e.clientX);
+                    }
+                    if (this.isDraggingMiddle) {
+                        this.updateMiddlePosition(e.clientX);
+                    }
+                });
+
+                // Global mouse up
+                document.addEventListener('mouseup', () => {
+                    this.isDraggingTop = false;
+                    this.isDraggingMiddle = false;
+                    this.wrapper.classList.remove('dragging');
+                });
+
+                // Touch events for top handle
+                this.handleTop.addEventListener('touchstart', (e) => {
+                    this.isDraggingTop = true;
+                    e.preventDefault();
+                });
+
+                // Touch events for middle handle
+                this.handleMiddle.addEventListener('touchstart', (e) => {
+                    this.isDraggingMiddle = true;
+                    e.preventDefault();
+                });
+
+                // Global touch move
+                document.addEventListener('touchmove', (e) => {
+                    if (this.isDraggingTop) {
+                        this.updateTopPosition(e.touches[0].clientX);
+                    }
+                    if (this.isDraggingMiddle) {
+                        this.updateMiddlePosition(e.touches[0].clientX);
+                    }
+                });
+
+                // Global touch end
+                document.addEventListener('touchend', () => {
+                    this.isDraggingTop = false;
+                    this.isDraggingMiddle = false;
+                });
+            }
+
+            updateTopPosition(clientX) {
+                const rect = this.wrapper.getBoundingClientRect();
+                let percentage = ((clientX - rect.left) / rect.width) * 100;
+                
+                // Constrain between 0 and 100
+                percentage = Math.max(0, Math.min(100, percentage));
+                
+                // Update divider position
+                this.dividerTop.style.left = `${percentage}%`;
+                
+                // Update clip-path (reveal from left, so we hide the right side)
+                const clipRight = 100 - percentage;
+                this.topLayer.style.clipPath = `inset(0 ${clipRight}% 0 0)`;
+            }
+
+            updateMiddlePosition(clientX) {
+                const rect = this.wrapper.getBoundingClientRect();
+                let percentage = ((clientX - rect.left) / rect.width) * 100;
+                
+                // Constrain between 0 and 100
+                percentage = Math.max(0, Math.min(100, percentage));
+                
+                // Update divider position
+                this.dividerMiddle.style.left = `${percentage}%`;
+                
+                // Update clip-path (reveal from left, so we hide the right side)
+                const clipRight = 100 - percentage;
+                this.middleLayer.style.clipPath = `inset(0 ${clipRight}% 0 0)`;
+            }
+        }
+
+        // Initialize when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            new SwipeComparison();
+        });
+    </script>
 </body>
 </html>
