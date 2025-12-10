@@ -2,74 +2,121 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>3-Way Image Swipe</title>
+<title>ArcGIS-Style 3-Way Swipe</title>
+
 <style>
-body {
-  margin: 0;
-  background: #111;
-}
+  body {
+    background: #f7f7f7;
+    margin: 0;
+    font-family: "Avenir Next", "Segoe UI", sans-serif;
+  }
 
-.three-swipe-container {
-  width: 100%;
-  max-width: 900px;
-  margin: 0 auto;
-  text-align: center;
-  color: white;
-  font-family: sans-serif;
-}
+  .swipe-container {
+    max-width: 900px;
+    margin: 40px auto;
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.08);
+    padding-bottom: 25px;
+  }
 
-.three-swipe-wrapper {
-  display: flex;
-  width: 300%;
-  transition: transform 0.5s ease-in-out;
-}
+  /* Image strip */
+  .swipe-wrapper {
+    display: flex;
+    width: 300%;
+    transition: transform 0.35s ease;
+  }
 
-.swipe-img {
-  width: 100%;
-  object-fit: cover;
-}
+  .swipe-img {
+    width: 100%;
+    object-fit: cover;
+  }
 
-.three-swipe-buttons {
-  margin: 10px 0;
-}
+  /* Slider styling */
+  .slider-row {
+    width: 90%;
+    margin: 18px auto 0 auto;
+    position: relative;
+  }
 
-.three-swipe-buttons button {
-  background: #333;
-  border: 1px solid #777;
-  color: white;
-  padding: 6px 14px;
-  margin: 0 6px;
-  cursor: pointer;
-  border-radius: 4px;
-}
+  input[type=range] {
+    width: 100%;
+    appearance: none;
+    height: 6px;
+    background: #d5d5d5;
+    border-radius: 4px;
+    outline: none;
+  }
 
-.three-swipe-buttons button:hover {
-  background: #555;
-}
+  /* Track */
+  input[type=range]::-webkit-slider-runnable-track {
+    height: 6px;
+    background: #d5d5d5;
+    border-radius: 6px;
+  }
 
-#slider {
-  width: 80%;
-  margin-top: 10px;
-}
+  /* Handle */
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 22px;
+    height: 22px;
+    background: white;
+    border: 2px solid #0079c1; /* Esri blue */
+    border-radius: 50%;
+    cursor: pointer;
+    margin-top: -8px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.25);
+  }
+
+  /* Buttons (optional) */
+  .label-row {
+    text-align: center;
+    margin-top: 10px;
+  }
+
+  .label-row button {
+    border: none;
+    background: #0079c1;
+    color: white;
+    padding: 6px 16px;
+    border-radius: 5px;
+    margin: 0 4px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .label-row button:hover {
+    background: #005a8e;
+  }
+
 </style>
 </head>
 <body>
 
-<div class="three-swipe-container">
-  <div class="three-swipe-wrapper" id="swipeWrapper">
+<div class="swipe-container">
+  
+  <!-- Images -->
+  <div class="swipe-wrapper" id="swipeWrapper">
     <img src="A.jpg" class="swipe-img">
     <img src="B.jpg" class="swipe-img">
     <img src="C.jpg" class="swipe-img">
   </div>
 
-  <div class="three-swipe-buttons">
+  <!-- Slider -->
+  <div class="slider-row">
+    <input type="range" min="0" max="2" value="1" step="1" id="slider">
+  </div>
+
+  <!-- A / B / C buttons (optional) -->
+  <div class="label-row">
     <button onclick="goTo(0)">A</button>
     <button onclick="goTo(1)">B</button>
     <button onclick="goTo(2)">C</button>
   </div>
 
-  <input type="range" min="0" max="2" value="1" step="1" id="slider">
 </div>
+
 
 <script>
 const slider = document.getElementById("slider");
