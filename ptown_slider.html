@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Image Swipe Comparison</title>
+    <title>Provincetown Image Swipe Comparison</title>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Playfair+Display:wght@400;600&display=swap" rel="stylesheet">
     <style>
         * {
@@ -52,13 +52,9 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 3rem;
-            color: white;
-            font-family: 'Playfair Display', serif;
         }
 
         .image-layer-bottom img {
@@ -75,13 +71,9 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 3rem;
-            color: white;
-            font-family: 'Playfair Display', serif;
             clip-path: inset(0 50% 0 0);
             transition: clip-path 0.05s linear;
         }
@@ -100,13 +92,9 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 3rem;
-            color: white;
-            font-family: 'Playfair Display', serif;
             clip-path: inset(0 75% 0 0);
             transition: clip-path 0.05s linear;
         }
@@ -282,22 +270,19 @@
 <body>
     <div class="container">
         <div class="comparison-wrapper" id="comparisonWrapper">
-            <!-- Bottom layer (always visible) -->
+            <!-- Bottom layer (always visible on right) -->
             <div class="image-layer-bottom">
-                <img src="ptown_2.jpg" alt="Image 1">
-                <div>Image 1</div>
+                <img src="ptown_2.jpg" alt="Provincetown 2">
             </div>
 
             <!-- Middle layer (covers right side initially) -->
             <div class="image-layer-middle" id="middleLayer">
-                <img src="ptown_1.jpg" alt="Image 2">
-                <div>Image 2</div>
+                <img src="ptown_1.jpg" alt="Provincetown 1">
             </div>
 
             <!-- Top layer (covers most, reveals from left) -->
             <div class="image-layer-top" id="topLayer">
-                <img src="ptown_0.jpg" alt="Image 3">
-                <div>Image 3</div>
+                <img src="ptown_0.jpg" alt="Provincetown 0">
             </div>
 
             <!-- Dividers with handles -->
@@ -310,9 +295,9 @@
             </div>
 
             <!-- Labels -->
-            <div class="image-label label-top">Image 3</div>
-            <div class="image-label label-middle">Image 2</div>
-            <div class="image-label label-bottom">Image 1</div>
+            <div class="image-label label-top">Provincetown 0</div>
+            <div class="image-label label-middle">Provincetown 1</div>
+            <div class="image-label label-bottom">Provincetown 2</div>
 
             <!-- Instructions -->
             <div class="instructions">
