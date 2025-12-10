@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Three Image Comparison Swipe</title>
+
+<style>
+  body {
+    margin: 0;
+    background: #000;
+  }
+
+  .compare-container {
+    position: relative;
+    width: 100%;
+    max-width: 1600px;
+    margin: auto;
+    overflow: hidden;
+  }
+
+  .layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: auto;
+    overflow: hidden;
+  }
+
+  .layer img {
+    width: 100%;
+    display: block;
+    user-select: none;
+    pointer-events: none;
+  }
+
+  .handle {
+    position: absolute;
+    top: 0;
+    width: 6px;
+    background: rgba(255,255,255,0.8);
+    cursor: ew-resize;
+    height: 100%;
+    z-index: 10;
+    transform: translateX(-3px);
+    border-radius: 3px;
+  }
+</style>
+</head>
+
+<body>
+
+<div class="compare-container" id="compare">
+
+  <!-- Image 3 (bottom fully visible) -->
+  <img src="PTown_2.jpg" alt="Base Layer">
+
+  <!-- Image 2 with a draggable reveal -->
+  <div class="layer" id="layer2">
+    <img src="PTown_1.jpg" alt="">
+  </div>
+  <div class="handle" id="handle2"></div>
+
+  <!-- Image 1 with a draggable reveal -->
+  <div class="layer" id="layer1">
+    <img src="PTown_0.jpg" alt="">
+  </div>
+  <div class="handle" id="handle1"></div>
+
+</div>
+
+<script>
+  function makeSlider(layerId, handleId, startXPercent) {
+    const container = document.getElementById("compare");
+    const layer = document.getElementById(layerId);
+    const handle = document.getElementById(handleId);
+
+    let dragging = false;
+
+    function updatePosition(px) {
+      const rect = container.getBoundingClientRect();
+      let x = px - rect.left;
+      x = Math.max(0, Math.min(rect.width, x));  // clamp
+      layer.style.width = x + "px";
+      handle.style.left = x + "px";
+    }
+
+    handle.addEventListener("mousedown", e => {
+      dragging = true;
+      updatePosition(e.clientX);
+    });
+
+    window.addEventListener("mousemove", e => {
+      if (dragging) updatePosition(e.clientX);
+    });
+
+    window.addEventListener("mouseup", () => dragging = false);
+
+    // touch support
+    handle.addEventListener("touchstart", e => {
+      dragging = true;
+      updatePosition(e.touches[0].clientX);
+    });
+
+    window.addEventListener("touchmove", e => {
+      if (dragging) updatePosition(e.touches[0].clientX);
+    });
+
+    window.addEventListener("touchend", () => dragging = false);
+
+    // initial position
+    const initialX = container.offsetWidth * startXPercent;
+    layer.style.width = initialX + "px";
+    handle.style.left = initialX + "px";
+  }
+
+  // top layer handle appears left-most
+  makeSlider("layer1", "handle1", 0.33);
+
+  // middle layer handle appears mid
+  makeSlider("layer2", "handle2", 0.66);
+</script>
+
+</body>
+</html>
